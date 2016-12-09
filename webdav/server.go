@@ -31,10 +31,10 @@ func ExecDir() (string, error) {
 }
 
 func init() {
-	exePath, err := ExecDir()
-	if err != nil {
-		panic(err)
-	}
+	// exePath, err := ExecDir()
+	// if err != nil {
+	// 	panic(err)
+	// }
 }
 
 func Handler(root FileSystem) http.Handler {
@@ -66,8 +66,9 @@ func generateToken() string {
 }
 
 func NewServer(dir, prefix string, listDir bool) *Server {
+	d := Dir(dir)
 	return &Server{
-		Fs:             Dir(dir),
+		Fs:             d,
 		TrimPrefix:     prefix,
 		Listings:       listDir,
 		tokens_to_lock: make(map[string]*Lock),
