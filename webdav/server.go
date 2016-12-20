@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"mime"
 	"net/http"
@@ -107,7 +108,7 @@ func IsPushMethod(method string) bool {
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	//log.Println("DAV:", r.RemoteAddr, r.Method, r.URL)
+	log.Println("DAV:", r.RemoteAddr, r.Method, r.URL)
 
 	switch r.Method {
 	case "OPTIONS":
@@ -314,6 +315,10 @@ func (s *Server) doPropfind(w http.ResponseWriter, r *http.Request) {
 	}
 
 	depth := r.Header.Get("Depth")
+	if depth == "" {
+		depth = "1"
+	}
+
 	switch depth {
 	case "0", "1":
 	case "", "infinity":
@@ -399,7 +404,8 @@ func (s *Server) doPropfind(w http.ResponseWriter, r *http.Request) {
 	buf.WriteString(`<multistatus xmlns='DAV:'>`)
 
 	// TODO: https?
-	abs := "http://" + r.Host + s.TrimPrefix
+	// abs := "http://" + r.Host + s.TrimPrefix
+	abs := ""
 
 	for _, p := range paths {
 		// TODO
@@ -414,7 +420,7 @@ func (s *Server) doPropfind(w http.ResponseWriter, r *http.Request) {
 		fi, _ := f.Stat()
 
 		buf.WriteString(`<response>`)
-		buf.WriteString(`<href>` + abs + "/" + p + `</href>`)
+		buf.WriteString(`<href>` + filepath.Join(abs, p) + `</href>`)
 		buf.WriteString(`<propstat>`)
 		{
 			buf.WriteString(`<prop>`)

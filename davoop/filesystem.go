@@ -1,7 +1,6 @@
 package davoop
 
 import (
-	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -41,7 +40,7 @@ func (d HDFSDir) sanitizePath(name string) (string, error) {
 	}
 	dir = filepath.Join(dir, filepath.FromSlash(path.Clean("/"+name)))
 
-	log.Println(name, " -> ", dir)
+	// log.Println(name, " -> ", dir)
 
 	return dir, nil
 }
